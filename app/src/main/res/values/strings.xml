@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Finkket</string>
+    <string name="start_new">New</string>
+    <string name="brush">Brush</string>
+    <string name="erase">Erase</string>
+    <string name="save">Save</string>
+    <string name="paint">Paint</string>
+    
+    <string name="smallBrush">Small Brush</string>
+    <string name="mediumBrush">Medium Brush</string>
+    <string name="largeBrush">Large Brush</string>
+
+</resources>
