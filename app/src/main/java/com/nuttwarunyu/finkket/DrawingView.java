@@ -1,15 +1,19 @@
 package com.nuttwarunyu.finkket;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -17,46 +21,42 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.ImageView;
 
 import java.lang.reflect.Type;
 
 /**
  * Created by Dell-NB on 27/10/2558.
  */
-public class DrawingView extends View {
+public class DrawingView extends ImageView {
 
     private Path drawPath;
     private Paint drawPaint, canvasPaint;
     private int paintColor = 0xFFFFFFFF;
     private Canvas drawCanvas;
-    private Bitmap canvasBitmap;
+    private Bitmap canvasBitmap, currBitmap;
     private float brushSize, lastBrushSize;
     private boolean erase = false;
     private int paintAlpha = 255;
 
-
-
     public int getPaintAlpha() {
+        Log.d("getAlpha", "   :  " + paintAlpha);
         return Math.round((float) paintAlpha / 255 * 100);
     }
 
     public void setPaintAlpha(int newPaintAlpha) {
-        paintAlpha = Math.round((float) paintAlpha / 255 * 100);
+        paintAlpha = Math.round((float) newPaintAlpha / 100 * 255);
         drawPaint.setColor(0xFFFFFFFF);
         drawPaint.setAlpha(paintAlpha);
+        Log.d("setAlpha", "   :  " + paintAlpha);
     }
-
 
     public DrawingView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
+
         setupDrawing();
-        Log.d("DrawingView", "Process");
-        setBackgroundResource(R.drawable.note);
-/*        MainActivity mainActivity = new MainActivity();
-        Bitmap bitmapBG = mainActivity.setBG();
-        Drawable drawable = new BitmapDrawable(getResources(),bitmapBG);
-        setBackground(drawable);*/
     }
 
     private void setupDrawing() {
@@ -67,7 +67,7 @@ public class DrawingView extends View {
         drawPath = new Path();
         drawPaint = new Paint();
 
-        drawPaint.setColor(paintColor);
+        drawPaint.setColor(Color.TRANSPARENT);
         drawPaint.setAntiAlias(true);
         drawPaint.setStrokeWidth(brushSize);
         drawPaint.setStyle(Paint.Style.STROKE);
@@ -75,7 +75,6 @@ public class DrawingView extends View {
         drawPaint.setStrokeCap(Paint.Cap.ROUND);
 
         canvasPaint = new Paint(Paint.DITHER_FLAG);
-
     }
 
     public void setBrushSize(float newSize) {
@@ -89,18 +88,17 @@ public class DrawingView extends View {
         super.onSizeChanged(w, h, oldw, oldh);
 
         canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-
-        //Bitmap currentBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.note);
-        //canvasBitmap = currentBitmap.copy(Bitmap.Config.ARGB_8888,true);
         drawCanvas = new Canvas(canvasBitmap);
     }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
+         canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
         canvas.drawPath(drawPath, drawPaint);
+
     }
 
     @Override
@@ -144,8 +142,9 @@ public class DrawingView extends View {
     public void setErase(boolean isErase) {
         erase = isErase;
 
-        if (erase) drawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-        else drawPaint.setXfermode(null);
+        if (erase) {
+            drawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+        } else drawPaint.setXfermode(null);
     }
 
     public void startNew() {
@@ -162,7 +161,11 @@ public class DrawingView extends View {
 
         drawPaint.setColor(0xFFFFFFFF);
         drawPaint.setShader(patternBitmapShader);
+    }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
 }

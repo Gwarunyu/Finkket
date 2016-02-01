@@ -1,31 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#848484"
+    android:background="#d3c9c9"
     android:orientation="horizontal"
     tools:context=".MainActivity">
 
     <LinearLayout
+        android:id="@+id/line_tool"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
         android:orientation="vertical">
+
 
         <ImageButton
             android:id="@+id/new_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="@string/start_new"
-            android:src="@drawable/new_pic" />
-
+            android:src="@drawable/ic_new" />
+        <ImageButton
+            android:id="@+id/rotate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="rotate"
+            android:src="@drawable/ic_new" />
         <ImageButton
             android:id="@+id/draw_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="@string/brush"
-            android:src="@drawable/brush" />
+            android:src="@drawable/ic_brush" />
 
         <ImageButton
             android:id="@+id/opacity_btn"
@@ -40,28 +48,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="@string/erase"
-            android:src="@drawable/eraser" />
+            android:src="@drawable/ic_eraser" />
 
         <ImageButton
             android:id="@+id/save_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="@string/save"
-            android:src="@drawable/save" />
+            android:src="@drawable/ic_save" />
 
     </LinearLayout>
 
-    <com.nuttwarunyu.finkket.DrawingView
-        android:id="@+id/drawing"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        />
+        <com.nuttwarunyu.finkket.DrawingView
+            android:id="@+id/drawing"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:foregroundGravity="center"
+            android:layout_toLeftOf="@+id/line_color"
+            android:layout_toRightOf="@+id/line_tool" />
+
 
     <LinearLayout
+        android:id="@+id/line_color"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:orientation="horizontal" >
 
         <!-- Top Row -->
@@ -70,9 +82,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
-
-
-
 
 
             <ImageButton
@@ -163,4 +172,4 @@
 
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

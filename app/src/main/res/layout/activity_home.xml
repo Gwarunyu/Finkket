@@ -3,24 +3,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
     tools:context="com.nuttwarunyu.finkket.HomeActivity"
-    android:orientation="vertical">
+    android:background="@drawable/screen_home">
 
-    <Button
-        android:id="@+id/loadPhoto_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Open Photo" />
-
-    <Button
-        android:id="@+id/camera_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Camera" />
-
-    <ImageView
-        android:id="@+id/imgView"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:orientation="horizontal"></LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        android:layout_marginRight="40dp"
+        android:layout_weight="5"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/new_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerInside"
+            android:layout_above="@+id/camera_btn"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="10dp"
+             />
+
+        <ImageButton
+            android:id="@+id/camera_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerInside"
+            android:layout_above="@+id/loadPhoto_btn"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="10dp"
+            />
+
+        <ImageButton
+            android:scaleType="centerInside"
+            android:id="@+id/loadPhoto_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="25dp"
+            />
+    </RelativeLayout>
+
 
 </LinearLayout>

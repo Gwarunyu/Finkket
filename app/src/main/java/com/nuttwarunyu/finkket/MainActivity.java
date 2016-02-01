@@ -2,34 +2,108 @@ package com.nuttwarunyu.finkket;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private DrawingView drawingView;
-    private ImageButton currPaint, brushBtn, saveBtn, eraseBtn, newBtn;
+    private ImageButton currPaint, brushBtn, saveBtn, eraseBtn, newBtn, rotateBtn;
     private ImageButton opacityBtn;
     private float smallBrush, mediumBrush, largeBrush;
+    private Bitmap bitmapCamera = null;
+
+    Uri photoUri;
+    Drawable drawable;
+
+    private void decodeFile(Uri photoUri) throws FileNotFoundException {
+
+        BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(getContentResolver().openInputStream(photoUri), null, o);
+
+        // The new size we want to scale to
+        final int REQUIRED_SIZE = 1024;
+
+        // Find the correct scale value. It should be the power of 2.
+        int width_tmp = o.outWidth, height_tmp = o.outHeight;
+        int scale = 1;
+        while (true) {
+            if (width_tmp < REQUIRED_SIZE && height_tmp < REQUIRED_SIZE)
+                break;
+            width_tmp /= 2;
+            height_tmp /= 2;
+            scale *= 2;
+        }
+
+        // Decode with inSampleSize
+        BitmapFactory.Options o2 = new BitmapFactory.Options();
+        o2.inSampleSize = scale;
+        bitmapCamera = BitmapFactory.decodeStream(getContentResolver().openInputStream(photoUri), null, o2);
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
+                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         super.onCreate(savedInstanceState);
-        Log.d("onCreate", "SET BG");
+
+        photoUri = getIntent().getData();
+
+        if (photoUri != null) {
+
+            try {
+                decodeFile(photoUri);
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        drawable = new BitmapDrawable(bitmapCamera);
+
         setContentView(R.layout.activity_main);
 
         smallBrush = getResources().getInteger(R.integer.small_size);
@@ -37,6 +111,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         largeBrush = getResources().getInteger(R.integer.large_size);
 
         drawingView = (DrawingView) findViewById(R.id.drawing);
+        if (bitmapCamera == null) {
+            Log.d("TAG ;; ; ;","drawable = null");
+            drawingView.setBackgroundColor(Color.WHITE);
+        }
+        drawingView.setBackground(drawable);
+
+
         LinearLayout paintLayout = (LinearLayout) findViewById(R.id.paint_colors);
 
         currPaint = (ImageButton) paintLayout.getChildAt(0);
@@ -44,43 +125,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         brushBtn = (ImageButton) findViewById(R.id.draw_btn);
         brushBtn.setOnClickListener(this);
-
+        rotateBtn = (ImageButton) findViewById(R.id.rotate);
+        rotateBtn.setOnClickListener(this);
         saveBtn = (ImageButton) findViewById(R.id.save_btn);
         saveBtn.setOnClickListener(this);
-
         eraseBtn = (ImageButton) findViewById(R.id.erase_btn);
         eraseBtn.setOnClickListener(this);
-
         newBtn = (ImageButton) findViewById(R.id.new_btn);
         newBtn.setOnClickListener(this);
-
         opacityBtn = (ImageButton) findViewById(R.id.opacity_btn);
         opacityBtn.setOnClickListener(this);
 
     }
 
-    public Bitmap setBG() {
-
-        byte[] bytesArray = getIntent().getByteArrayExtra("imageBG");
-        Log.d("Bitmap SetBG"," ReturnBitmap");
-        return BitmapFactory.decodeByteArray(bytesArray, 0, bytesArray.length);
-    }
-
     public void paintClicked(View view) {
         if (view != currPaint) {
             ImageButton imageButton = (ImageButton) view;
-            // String color = view.getTag().toString();
             String pattern = view.getTag().toString();
 
-            //drawingView.setColor(color);
             drawingView.setPattern(pattern);
-
             drawingView.setBrushSize(drawingView.getLastBrushSize());
 
             imageButton.setImageDrawable(getResources().getDrawable(R.drawable.paint_pressed));
             currPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint));
             currPaint = (ImageButton) view;
-
 
         }
     }
@@ -128,6 +196,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
             seekDialog.show();
+        }
+
+        if (v.getId() == R.id.rotate) {
+            Matrix matrix = new Matrix();
+            matrix.postRotate(90);
+            bitmapCamera = Bitmap.createBitmap(bitmapCamera, 0, 0, bitmapCamera.getWidth(), bitmapCamera.getHeight(), matrix, true);
+
+            BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), bitmapCamera);
+            drawingView.setBackground(bitmapDrawable);
         }
 
         if (v.getId() == R.id.new_btn) {
@@ -193,39 +270,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             drawingView.setErase(true);
             drawingView.setBrushSize(mediumBrush);
 
-            /*final Dialog brushDialog = new Dialog(this);
-            brushDialog.setTitle("Eraser size:");
-            brushDialog.setContentView(R.layout.brush_chooser);
-
-            ImageButton smallBtn = (ImageButton) brushDialog.findViewById(R.id.small_brush);
-            smallBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    drawingView.setErase(true);
-                    drawingView.setBrushSize(smallBrush);
-                    brushDialog.dismiss();
-                }
-            });
-            ImageButton mediumBtn = (ImageButton) brushDialog.findViewById(R.id.medium_brush);
-            mediumBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    drawingView.setErase(true);
-                    drawingView.setBrushSize(mediumBrush);
-                    brushDialog.dismiss();
-                }
-            });
-            ImageButton largeBtn = (ImageButton) brushDialog.findViewById(R.id.large_brush);
-            largeBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    drawingView.setErase(true);
-                    drawingView.setBrushSize(largeBrush);
-                    brushDialog.dismiss();
-                }
-            });*/
-
-            //brushDialog.show();
 
         } else if (v.getId() == R.id.save_btn) {
             AlertDialog.Builder saveDialog = new AlertDialog.Builder(this);
