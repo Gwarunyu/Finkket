@@ -22,12 +22,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/start_new"
             android:src="@drawable/ic_new" />
-        <ImageButton
-            android:id="@+id/rotate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="rotate"
-            android:src="@drawable/ic_new" />
+
         <ImageButton
             android:id="@+id/draw_btn"
             android:layout_width="match_parent"

@@ -34,6 +34,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -51,34 +53,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Bitmap bitmapCamera = null;
 
     Uri photoUri;
-    Drawable drawable;
-
-    private void decodeFile(Uri photoUri) throws FileNotFoundException {
-
-        BitmapFactory.Options o = new BitmapFactory.Options();
-        o.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(getContentResolver().openInputStream(photoUri), null, o);
-
-        // The new size we want to scale to
-        final int REQUIRED_SIZE = 1024;
-
-        // Find the correct scale value. It should be the power of 2.
-        int width_tmp = o.outWidth, height_tmp = o.outHeight;
-        int scale = 1;
-        while (true) {
-            if (width_tmp < REQUIRED_SIZE && height_tmp < REQUIRED_SIZE)
-                break;
-            width_tmp /= 2;
-            height_tmp /= 2;
-            scale *= 2;
-        }
-
-        // Decode with inSampleSize
-        BitmapFactory.Options o2 = new BitmapFactory.Options();
-        o2.inSampleSize = scale;
-        bitmapCamera = BitmapFactory.decodeStream(getContentResolver().openInputStream(photoUri), null, o2);
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,22 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         super.onCreate(savedInstanceState);
-
         photoUri = getIntent().getData();
-
-        if (photoUri != null) {
-
-            try {
-                decodeFile(photoUri);
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-
-
-        drawable = new BitmapDrawable(bitmapCamera);
-
         setContentView(R.layout.activity_main);
 
         smallBrush = getResources().getInteger(R.integer.small_size);
@@ -111,12 +70,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         largeBrush = getResources().getInteger(R.integer.large_size);
 
         drawingView = (DrawingView) findViewById(R.id.drawing);
-        if (bitmapCamera == null) {
-            Log.d("TAG ;; ; ;","drawable = null");
-            drawingView.setBackgroundColor(Color.WHITE);
-        }
-        drawingView.setBackground(drawable);
 
+        Glide.with(getApplicationContext()).load(photoUri).centerCrop().into(drawingView);
 
         LinearLayout paintLayout = (LinearLayout) findViewById(R.id.paint_colors);
 
@@ -125,8 +80,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         brushBtn = (ImageButton) findViewById(R.id.draw_btn);
         brushBtn.setOnClickListener(this);
-        rotateBtn = (ImageButton) findViewById(R.id.rotate);
-        rotateBtn.setOnClickListener(this);
         saveBtn = (ImageButton) findViewById(R.id.save_btn);
         saveBtn.setOnClickListener(this);
         eraseBtn = (ImageButton) findViewById(R.id.erase_btn);
@@ -196,15 +149,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
             seekDialog.show();
-        }
-
-        if (v.getId() == R.id.rotate) {
-            Matrix matrix = new Matrix();
-            matrix.postRotate(90);
-            bitmapCamera = Bitmap.createBitmap(bitmapCamera, 0, 0, bitmapCamera.getWidth(), bitmapCamera.getHeight(), matrix, true);
-
-            BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), bitmapCamera);
-            drawingView.setBackground(bitmapDrawable);
         }
 
         if (v.getId() == R.id.new_btn) {
