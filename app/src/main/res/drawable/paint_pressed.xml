@@ -1,9 +1,9 @@
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
-        <shape android:shape="rectangle" >
+        <shape android:shape="rectangle">
             <stroke
                 android:width="4dp"
-                android:color="#FF333333" />
+                android:color="@color/colorPrimaryDark" />
 
             <solid android:color="#00000000" />
 
@@ -15,10 +15,10 @@
         </shape>
     </item>
     <item>
-        <shape xmlns:android="http://schemas.android.com/apk/res/android" >
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
             <stroke
                 android:width="4dp"
-                android:color="#FF333333" />
+                android:color="@color/colorPrimaryDark" />
 
             <solid android:color="#00000000" />
 

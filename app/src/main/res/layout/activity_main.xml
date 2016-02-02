@@ -3,9 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#d3c9c9"
+    android:background="@color/background"
     android:orientation="horizontal"
     tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/save_btn"
+        android:text="Save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/line_color"
+        android:layout_alignParentRight="true"
+        android:contentDescription="@string/save"
+        android:background="@drawable/button_login"
+       />
 
     <LinearLayout
         android:id="@+id/line_tool"
@@ -36,7 +47,8 @@
             android:layout_height="fill_parent"
             android:layout_gravity="center"
             android:contentDescription="opacity"
-            android:src="@drawable/opacity" />
+            android:src="@drawable/ic_opacity"
+            />
 
         <ImageButton
             android:id="@+id/erase_btn"
@@ -44,13 +56,6 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/erase"
             android:src="@drawable/ic_eraser" />
-
-        <ImageButton
-            android:id="@+id/save_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/save"
-            android:src="@drawable/ic_save" />
 
     </LinearLayout>
 
@@ -86,7 +91,6 @@
                 android:background="@drawable/pattern1"
                 android:contentDescription="pattern"
                 android:onClick="paintClicked"
-                android:src="@drawable/paint"
                 android:tag="pattern1" />
             <ImageButton
                 android:layout_width="30dp"
@@ -95,7 +99,7 @@
                 android:background="@drawable/pattern2"
                 android:contentDescription="pattern"
                 android:onClick="paintClicked"
-                android:src="@drawable/paint"
+
                 android:tag="pattern2" />
             <ImageButton
                 android:layout_width="30dp"
@@ -104,7 +108,7 @@
                 android:background="@drawable/pattern3"
                 android:contentDescription="pattern"
                 android:onClick="paintClicked"
-                android:src="@drawable/paint"
+
                 android:tag="pattern3" />
             <ImageButton
                 android:layout_width="30dp"
@@ -113,7 +117,7 @@
                 android:background="@drawable/pattern4"
                 android:contentDescription="pattern"
                 android:onClick="paintClicked"
-                android:src="@drawable/paint"
+
                 android:tag="pattern4" />
 
         </LinearLayout>
@@ -133,7 +137,6 @@
                 android:background="@drawable/pattern5"
                 android:contentDescription="pattern"
                 android:onClick="paintClicked"
-                android:src="@drawable/paint"
                 android:tag="pattern5" />
             <ImageButton
                 android:layout_width="30dp"
@@ -142,7 +145,6 @@
                 android:background="@drawable/pattern6"
                 android:contentDescription="pattern"
                 android:onClick="paintClicked"
-                android:src="@drawable/paint"
                 android:tag="pattern6" />
             <ImageButton
                 android:layout_width="30dp"
@@ -151,7 +153,6 @@
                 android:background="@drawable/pattern7"
                 android:contentDescription="pattern"
                 android:onClick="paintClicked"
-                android:src="@drawable/paint"
                 android:tag="pattern7" />
             <ImageButton
                 android:layout_width="30dp"
@@ -160,7 +161,7 @@
                 android:background="@drawable/pattern8"
                 android:contentDescription="pattern"
                 android:onClick="paintClicked"
-                android:src="@drawable/paint"
+
                 android:tag="pattern8" />
 
         </LinearLayout>

@@ -2,6 +2,7 @@ package com.nuttwarunyu.finkket;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -14,16 +15,17 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
 
 public class HomeActivity extends AppCompatActivity {
 
-    ImageButton newBtn,loadPhotoBtn, cameraBtn ;
+    Button loadPhotoBtn, cameraBtn;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_IMAGE_GALLERY = 2;
-
+    TextView txtTitle;
     private Uri mHighQualityImageUri = null;
 
     @Override
@@ -37,20 +39,13 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        loadPhotoBtn = (ImageButton) findViewById(R.id.loadPhoto_btn);
-        cameraBtn = (ImageButton) findViewById(R.id.camera_btn);
-        newBtn = (ImageButton) findViewById(R.id.new_btn);
+        loadPhotoBtn = (Button) findViewById(R.id.loadPhoto_btn);
+        cameraBtn = (Button) findViewById(R.id.camera_btn);
+        txtTitle = (TextView) findViewById(R.id.text_title);
 
-        newBtn.setBackgroundResource(R.drawable.home_new);
-        newBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                startActivity(intent);
-            }
-        });
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "boonjot.ttf");
+        txtTitle.setTypeface(typeface);
 
-        cameraBtn.setBackgroundResource(R.drawable.home_camera);
         cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,7 +56,6 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        loadPhotoBtn.setBackgroundResource(R.drawable.home_folder);
         loadPhotoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,7 +104,6 @@ public class HomeActivity extends AppCompatActivity {
             if (photoUri != null) {
                 Intent sendUri = new Intent(getApplicationContext(), MainActivity.class);
                 sendUri.setData(photoUri);
-                Log.d("Send Uri From Home  ", photoUri + "   Go to MainActivity");
                 startActivity(sendUri);
             }
         }

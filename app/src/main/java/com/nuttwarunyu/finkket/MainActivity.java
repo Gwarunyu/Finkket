@@ -47,10 +47,11 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private DrawingView drawingView;
-    private ImageButton currPaint, brushBtn, saveBtn, eraseBtn, newBtn, rotateBtn;
+    private ImageButton currPaint, brushBtn, eraseBtn, newBtn, rotateBtn;
     private ImageButton opacityBtn;
     private float smallBrush, mediumBrush, largeBrush;
     private Bitmap bitmapCamera = null;
+    private Button saveBtn;
 
     Uri photoUri;
 
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         drawingView = (DrawingView) findViewById(R.id.drawing);
 
+
         Glide.with(getApplicationContext()).load(photoUri).centerCrop().into(drawingView);
 
         LinearLayout paintLayout = (LinearLayout) findViewById(R.id.paint_colors);
@@ -80,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         brushBtn = (ImageButton) findViewById(R.id.draw_btn);
         brushBtn.setOnClickListener(this);
-        saveBtn = (ImageButton) findViewById(R.id.save_btn);
+        saveBtn = (Button) findViewById(R.id.save_btn);
         saveBtn.setOnClickListener(this);
         eraseBtn = (ImageButton) findViewById(R.id.erase_btn);
         eraseBtn.setOnClickListener(this);
@@ -90,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         opacityBtn.setOnClickListener(this);
 
     }
+
 
     public void paintClicked(View view) {
         if (view != currPaint) {
