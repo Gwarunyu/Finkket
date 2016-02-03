@@ -36,6 +36,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -221,6 +224,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         } else if (v.getId() == R.id.save_btn) {
+
+            final InterstitialAd interstitialAd = new InterstitialAd(getApplicationContext());
+            interstitialAd.setAdUnitId("ca-app-pub-9597737983882274/9164522949");
+
+            AdRequest.Builder builder = new AdRequest.Builder();
+            AdRequest adRequest = builder.build();
+            interstitialAd.loadAd(adRequest);
+            interstitialAd.setAdListener(new AdListener() {
+                @Override
+                public void onAdLoaded() {
+                    Log.d("Ad","onAdLoaded");
+                    super.onAdLoaded();
+                    interstitialAd.show();
+                }
+            });
+
             AlertDialog.Builder saveDialog = new AlertDialog.Builder(this);
             saveDialog.setTitle("Save drawing");
             saveDialog.setMessage("Save drawing to device Gallery?");
@@ -236,6 +255,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Toast savedToast = Toast.makeText(getApplicationContext(),
                                 "Drawing saved to Gallery!", Toast.LENGTH_SHORT);
                         savedToast.show();
+
                     } else {
                         Toast unsavedToast = Toast.makeText(getApplicationContext(),
                                 "Oops! Image could not be saved.", Toast.LENGTH_SHORT);
