@@ -18,7 +18,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.io.File;
+
+import io.fabric.sdk.android.Fabric;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -37,6 +41,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_home);
 
         loadPhotoBtn = (Button) findViewById(R.id.loadPhoto_btn);

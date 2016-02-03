@@ -35,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.crashlytics.android.Crashlytics;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,14 +45,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
+import io.fabric.sdk.android.Fabric;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private DrawingView drawingView;
-    private ImageButton currPaint, brushBtn, eraseBtn, newBtn, rotateBtn;
-    private ImageButton opacityBtn;
+    private ImageButton currPaint;
     private float smallBrush, mediumBrush, largeBrush;
     private Bitmap bitmapCamera = null;
-    private Button saveBtn;
 
     Uri photoUri;
 
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         photoUri = getIntent().getData();
         setContentView(R.layout.activity_main);
 
@@ -73,22 +75,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         drawingView = (DrawingView) findViewById(R.id.drawing);
 
 
-        Glide.with(getApplicationContext()).load(photoUri).centerCrop().into(drawingView);
+        Glide.with(getApplicationContext()).load(photoUri).fitCenter().into(drawingView);
 
         LinearLayout paintLayout = (LinearLayout) findViewById(R.id.paint_colors);
 
         currPaint = (ImageButton) paintLayout.getChildAt(0);
         currPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint_pressed));
 
-        brushBtn = (ImageButton) findViewById(R.id.draw_btn);
+        Button brushBtn = (Button) findViewById(R.id.draw_btn);
         brushBtn.setOnClickListener(this);
-        saveBtn = (Button) findViewById(R.id.save_btn);
+        Button saveBtn = (Button) findViewById(R.id.save_btn);
         saveBtn.setOnClickListener(this);
-        eraseBtn = (ImageButton) findViewById(R.id.erase_btn);
+        Button eraseBtn = (Button) findViewById(R.id.erase_btn);
         eraseBtn.setOnClickListener(this);
-        newBtn = (ImageButton) findViewById(R.id.new_btn);
+        Button newBtn = (Button) findViewById(R.id.new_btn);
         newBtn.setOnClickListener(this);
-        opacityBtn = (ImageButton) findViewById(R.id.opacity_btn);
+        Button opacityBtn = (Button) findViewById(R.id.opacity_btn);
         opacityBtn.setOnClickListener(this);
 
     }
