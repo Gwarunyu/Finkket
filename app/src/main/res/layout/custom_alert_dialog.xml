@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="50dp"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <Button
+            android:id="@+id/save_device"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/button_login"
+            android:drawableLeft="@drawable/gallery"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:scaleType="centerInside"
+            android:text="Save in device" />
+
+        <com.facebook.share.widget.ShareButton
+            android:id="@+id/save_facebook"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_login"
+            android:drawableLeft="@drawable/facebook_ic"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:scaleType="centerInside"
+            android:text="Share on Facebook"
+            android:textColor="@color/black" />
+    </LinearLayout>
+</LinearLayout>

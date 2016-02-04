@@ -13,6 +13,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -36,6 +37,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.crashlytics.android.Crashlytics;
+import com.facebook.FacebookSdk;
+import com.facebook.share.ShareApi;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareButton;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -47,6 +53,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -55,8 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private DrawingView drawingView;
     private ImageButton currPaint;
     private float smallBrush, mediumBrush, largeBrush;
-    private Bitmap bitmapCamera = null;
-
+    Bitmap bitmap;
     Uri photoUri;
 
     @Override
@@ -67,35 +73,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
         Fabric.with(this, new Crashlytics());
         photoUri = getIntent().getData();
         setContentView(R.layout.activity_main);
+
+        Button brushBtn = (Button) findViewById(R.id.draw_btn);
+        Button saveBtn = (Button) findViewById(R.id.save_btn);
+        Button eraseBtn = (Button) findViewById(R.id.erase_btn);
+        Button newBtn = (Button) findViewById(R.id.new_btn);
+        Button opacityBtn = (Button) findViewById(R.id.opacity_btn);
+        drawingView = (DrawingView) findViewById(R.id.drawing);
+        LinearLayout paintLayout = (LinearLayout) findViewById(R.id.paint_colors);
+
 
         smallBrush = getResources().getInteger(R.integer.small_size);
         mediumBrush = getResources().getInteger(R.integer.medium_size);
         largeBrush = getResources().getInteger(R.integer.large_size);
 
-        drawingView = (DrawingView) findViewById(R.id.drawing);
-
-
         Glide.with(getApplicationContext()).load(photoUri).fitCenter().into(drawingView);
-
-        LinearLayout paintLayout = (LinearLayout) findViewById(R.id.paint_colors);
 
         currPaint = (ImageButton) paintLayout.getChildAt(0);
         currPaint.setImageDrawable(getResources().getDrawable(R.drawable.paint_pressed));
 
-        Button brushBtn = (Button) findViewById(R.id.draw_btn);
         brushBtn.setOnClickListener(this);
-        Button saveBtn = (Button) findViewById(R.id.save_btn);
         saveBtn.setOnClickListener(this);
-        Button eraseBtn = (Button) findViewById(R.id.erase_btn);
         eraseBtn.setOnClickListener(this);
-        Button newBtn = (Button) findViewById(R.id.new_btn);
         newBtn.setOnClickListener(this);
-        Button opacityBtn = (Button) findViewById(R.id.opacity_btn);
         opacityBtn.setOnClickListener(this);
-
     }
 
 
@@ -234,17 +239,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             interstitialAd.setAdListener(new AdListener() {
                 @Override
                 public void onAdLoaded() {
-                    Log.d("Ad","onAdLoaded");
+                    Log.d("Ad", "onAdLoaded");
                     super.onAdLoaded();
                     interstitialAd.show();
                 }
             });
 
-            AlertDialog.Builder saveDialog = new AlertDialog.Builder(this);
-            saveDialog.setTitle("Save drawing");
-            saveDialog.setMessage("Save drawing to device Gallery?");
-            saveDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
+            final Dialog dialog = new Dialog(MainActivity.this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.custom_alert_dialog);
+            dialog.setCancelable(true);
+
+            Typeface typeface = Typeface.createFromAsset(getAssets(), "boonjot.ttf");
+            Button btn_savedevice = (Button) dialog.findViewById(R.id.save_device);
+            btn_savedevice.setTypeface(typeface);
+            btn_savedevice.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     drawingView.setDrawingCacheEnabled(true);
                     String imgSaved = MediaStore.Images.Media.insertImage(
                             getContentResolver(),
@@ -264,12 +275,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     drawingView.destroyDrawingCache();
                 }
             });
-            saveDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-            saveDialog.show();
+            drawingView.setDrawingCacheEnabled(true);
+            Bitmap aa = drawingView.getDrawingCache();
+            SharePhoto sharePhoto = new SharePhoto.Builder().setBitmap(aa).build();
+            SharePhotoContent sharePhotoContent = new SharePhotoContent.Builder().addPhoto(sharePhoto).build();
+            ShareButton shareButton = (ShareButton) dialog.findViewById(R.id.save_facebook);
+            shareButton.setTypeface(typeface);
+            shareButton.setShareContent(sharePhotoContent);
+
+            dialog.show();
         }
     }
 

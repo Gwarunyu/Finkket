@@ -41,6 +41,10 @@ public class DrawingView extends ImageView {
     private boolean erase = false;
     private int paintAlpha = 255;
 
+    public Bitmap getCanvasBitmap() {
+        return canvasBitmap;
+    }
+
     public int getPaintAlpha() {
         Log.d("getAlpha", "   :  " + paintAlpha);
         return Math.round((float) paintAlpha / 255 * 100);
